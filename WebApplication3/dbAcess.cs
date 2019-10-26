@@ -65,7 +65,8 @@ namespace DBConnect
                 
                 int customerId = (int)(dataReader["customerId"]);
                 int amount = (int)(dataReader["amount"]);
-                Transaction transaction = new Transaction(customerId,amount);
+                string date = (string)dataReader["date"];
+                Transaction transaction = new Transaction(customerId,amount,date);
                 transactions.Add(transaction);
 
             }
@@ -85,23 +86,34 @@ namespace DBConnect
                 int customerId = (int)(dataReader["id"]);
                 int points = (int)dataReader["points"];
                 string name = dataReader["name"].ToString();
-                Customer customer = new Customer(customerId,points,name);
+                Customer customer = new Customer(customerId,points,name, null);
                 customers.Add(customer);
 
             }
             this.CloseConnection();
             return  customers;
         }
-        public void updatePoints(List<Customer> customers)
+
+        public List<Transaction> getMonthlyTransactions(DateTime dates)
         {
+            DateTime lastDay = dates.AddMonths(1).AddDays(-1).AddYears(0);
             connection = new MySqlConnection(connectionString);
+            List<Transaction> transactions = new List<Transaction>(); //would of made forign key for id but time crunch 
             this.openConnection();
-            foreach(var customer in customers)
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM transactions WHERE date BETWEEN" + dates + "AND" + lastDay + ";", connection);
+            MySqlDataReader dataReader = cmd.ExecuteReader();
+            while (dataReader.Read())
             {
-                MySqlCommand cmd = new MySqlCommand("UPDATE customers SET points="+customer.points + "where customers.id =" + customer.id +";", connection);
+
+                int customerId = (int)(dataReader["customerId"]);
+                int amount = (int)(dataReader["amount"]);
+                DateTime date = Convert.ToDateTime(dataReader["date"]);
+                Transaction transaction = new Transaction(customerId, amount, date);
+                transactions.Add(transaction);
+
             }
             this.CloseConnection();
+            return transactions;
         }
-
     }
 }
