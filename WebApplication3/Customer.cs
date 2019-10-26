@@ -40,5 +40,28 @@ namespace Customers
             }
             return customers;
         }
+        public static List<int> calculateMonthlyRewards(List<Transaction> transactions, List<Customer> customers)
+        {
+                // foreach customer add up transactions that belong to them for the month
+                List<int> listOfPoints = new List<int>();
+                foreach (var customer in customers)
+                {
+
+                    int points = 0;
+                    foreach (var transaction in transactions)
+                    {
+                        if (transaction.customerId == customer.id)
+                        {
+                            if (transaction.amount > 50 && transaction.amount <= 100)
+                                points += transaction.amount - 50;
+                            if (transaction.amount > 100)
+                                points += 50 + 2 * (transaction.amount - 100);
+                        }
+                    }
+                    listOfPoints.Add(points);
+                }
+                return listOfPoints;
+            }
+        }
     }
 }

@@ -25,11 +25,12 @@ namespace WebApplication3.Controllers
         }
 
         [HttpGet("months"]
-        public IActionResult getMonthlyRewards([FromBody] DateTime date)
+        public IActionResult getMonthlyRewards([FromBody] string date)
         {
+            
             List<Customer> customers = sqlConnection.getCustomers();
-            List<Transaction> transactions = sqlConnection.getMonthlyTransactions(date);
-            return Ok(Customer.calculateRewards(transactions, customers));
+            List<Transaction> transactions = sqlConnection.getMonthlyTransactions(Convert.ToDateTime(date));
+            return Ok(Customer.calculateMonthlyRewards(transactions, customers));
 
         }
     }

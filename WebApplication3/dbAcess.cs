@@ -96,11 +96,12 @@ namespace DBConnect
 
         public List<Transaction> getMonthlyTransactions(DateTime dates)
         {
+            DateTime firstDay = dates.AddDays(0).AddYears(0);
             DateTime lastDay = dates.AddMonths(1).AddDays(-1).AddYears(0);
             connection = new MySqlConnection(connectionString);
             List<Transaction> transactions = new List<Transaction>(); //would of made forign key for id but time crunch 
             this.openConnection();
-            MySqlCommand cmd = new MySqlCommand("SELECT * FROM transactions WHERE date BETWEEN" + dates + "AND" + lastDay + ";", connection);
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM transactions WHERE date BETWEEN" + firstDay + "AND" + lastDay + ";", connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
             while (dataReader.Read())
             {
