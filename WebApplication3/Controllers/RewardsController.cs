@@ -24,7 +24,7 @@ namespace WebApplication3.Controllers
             
         }
 
-        [HttpGet("months"]
+        [HttpGet("months")]
         public IActionResult getMonthlyRewards([FromBody] string date)
         {
             
