@@ -35,7 +35,7 @@ namespace DBConnect
             }
             catch (MySqlException ex)
             {
-                string message = "Cannot connect to server.  Contact administrator";
+                string message = "Cannot connect to server.  Contact administrator"; //TODO: sned to user
                 return false;
             }
         }
@@ -49,7 +49,7 @@ namespace DBConnect
             }
             catch (MySqlException ex)
             {
-                string message = "Cannot close connection";
+                string message = "Cannot close connection"; // TODO: send to user
                 return false;
             }
         }
@@ -66,7 +66,7 @@ namespace DBConnect
                 int customerId = (int)(dataReader["customerId"]);
                 int amount = (int)(dataReader["amount"]);
                 string date = (string)dataReader["date"];
-                Transaction transaction = new Transaction(customerId,amount,date);
+                Transaction transaction = new Transaction(customerId,amount,Convert.ToDateTime(date));
                 transactions.Add(transaction);
 
             }
@@ -94,14 +94,15 @@ namespace DBConnect
             return  customers;
         }
 
-        public List<Transaction> getMonthlyTransactions(DateTime dates)
+        public List<Transaction> getMonthlyTransactions(int dates)
         {
-            DateTime firstDay = dates.AddDays(0).AddYears(0);
-            DateTime lastDay = dates.AddMonths(1).AddDays(-1).AddYears(0);
+            DateTime newDate = new DateTime();
+            DateTime firstDay = newDate.AddDays(0).AddMonths(dates - 1).AddYears(2018);
+            DateTime lastDay = newDate.AddMonths(1).AddDays(-1).AddYears(2018);
             connection = new MySqlConnection(connectionString);
-            List<Transaction> transactions = new List<Transaction>(); //would of made forign key for id but time crunch 
+            List<Transaction> transactions = new List<Transaction>();  
             this.openConnection();
-            MySqlCommand cmd = new MySqlCommand("SELECT * FROM transactions WHERE date BETWEEN" + firstDay + "AND" + lastDay + ";", connection);
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM transactions WHERE date <= '" + firstDay.ToString("MM/dd/yyyy") + "' AND date >= '" + lastDay.ToString("MM/dd/yyyy") + "';", connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
             while (dataReader.Read())
             {

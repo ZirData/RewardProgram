@@ -57,11 +57,11 @@ namespace Customers
                             if (transaction.amount > 100)
                                 points += 50 + 2 * (transaction.amount - 100);
                         }
+                    
                     }
                     listOfPoints.Add(points);
                 }
                 return listOfPoints;
-            }
         }
     }
 }

@@ -6,6 +6,9 @@ using DBConnect;
 using Customers;
 using Transactions;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Microsoft.AspNetCore.Cors;
+using Newtonsoft.Json.Linq;
 
 namespace WebApplication3.Controllers
 {
@@ -14,7 +17,7 @@ namespace WebApplication3.Controllers
     {
         SqlConnect sqlConnection = new SqlConnect();
         public RewardsController() { }
-
+        
         [HttpGet]
         public IActionResult getRewards()
         {
@@ -23,14 +26,14 @@ namespace WebApplication3.Controllers
             return Ok(Customer.calculateRewards(transactions,customers));
             
         }
-
-        [HttpGet("months")]
-        public IActionResult getMonthlyRewards([FromBody] string date)
+        
+        [HttpPost("months")]
+        public IActionResult getMonthlyRewards([FromBody] JObject date)
         {
-            
+            int month = (int)date.SelectToken("date");
             List<Customer> customers = sqlConnection.getCustomers();
-            List<Transaction> transactions = sqlConnection.getMonthlyTransactions(Convert.ToDateTime(date));
-            return Ok(Customer.calculateMonthlyRewards(transactions, customers));
+            List<Transaction> transactions = sqlConnection.getMonthlyTransactions(month);
+            return Ok(JsonConvert.SerializeObject(Customer.calculateMonthlyRewards(transactions, customers)));
 
         }
     }
