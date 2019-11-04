@@ -26,15 +26,15 @@ namespace WebApplication3.Controllers
             return Ok(Customer.calculateRewards(transactions,customers));
             
         }
-        
+      
         [HttpPost("months")]
-        public IActionResult getMonthlyRewards([FromBody] JObject date)
+        public IActionResult getMonthlyRewards([FromBody] int month)
         {
-            int month = (int)date.SelectToken("date");
+            //int month = (int)date.SelectToken("date");
             List<Customer> customers = sqlConnection.getCustomers();
             List<Transaction> transactions = sqlConnection.getMonthlyTransactions(month);
             return Ok(JsonConvert.SerializeObject(Customer.calculateMonthlyRewards(transactions, customers)));
-
+           
         }
     }
 }

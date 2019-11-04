@@ -86,7 +86,7 @@ namespace DBConnect
                 int customerId = (int)(dataReader["id"]);
                 int points = (int)dataReader["points"];
                 string name = dataReader["name"].ToString();
-                Customer customer = new Customer(customerId,points,name, null);
+                Customer customer = new Customer(customerId,points,name);
                 customers.Add(customer);
 
             }
@@ -97,12 +97,14 @@ namespace DBConnect
         public List<Transaction> getMonthlyTransactions(int dates)
         {
             DateTime newDate = new DateTime();
-            DateTime firstDay = newDate.AddDays(0).AddMonths(dates - 1).AddYears(2018);
-            DateTime lastDay = newDate.AddMonths(1).AddDays(-1).AddYears(2018);
+            DateTime firstDay = newDate.AddDays(0).AddMonths(dates-1).AddYears(2018);
+            DateTime lastDay = newDate.AddMonths(dates).AddDays(-1).AddYears(2018);
+            Console.WriteLine(firstDay.ToString("MM/dd/yyyy"));
+            Console.WriteLine(lastDay);
             connection = new MySqlConnection(connectionString);
             List<Transaction> transactions = new List<Transaction>();  
             this.openConnection();
-            MySqlCommand cmd = new MySqlCommand("SELECT * FROM transactions WHERE date <= '" + firstDay.ToString("MM/dd/yyyy") + "' AND date >= '" + lastDay.ToString("MM/dd/yyyy") + "';", connection);
+            MySqlCommand cmd = new MySqlCommand("SELECT * FROM transactions WHERE date >='" + firstDay.ToString("MM/dd/yyyy") + "' AND date <= '" + lastDay.ToString("MM/dd/yyyy") + "';", connection);
             MySqlDataReader dataReader = cmd.ExecuteReader();
             while (dataReader.Read())
             {
